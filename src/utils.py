@@ -12,16 +12,10 @@ def sigmoid(x):
 @param x: np.array
 """
 def ReLU(x):
-  if x <= 0:
-    return 0
-  else:
-    return x 
+  return np.maximum(0, x)
   
 def ReLU_derivative(x):
-  if x <= 0:
-    return 0
-  else:
-    return 1
+  return x > 0
 
 # loss function
 """

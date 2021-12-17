@@ -17,12 +17,12 @@ class NeuralNetwork:
     
     # hidden layer 1 : 10 nodes (arbitrary) ; 11 nodes for inputs
     # return a matrix 10x11 of values between [0, 1]
-    self.weight_hl1 = np.random.uniform(size=(NUMBER_OF_NODES, NUMBER_OF_INPUTS))
-    self.bias_hl1 = np.random.uniform(size=(NUMBER_OF_NODES, 1))
+    self.weight_hl1 = np.random.uniform(size=(NUMBER_OF_DATA, NUMBER_OF_NODES))
+    self.bias_hl1 = np.random.uniform(size=(NUMBER_OF_INPUTS, NUMBER_OF_NODES))
     # output layer : 10 nodes (arbitrary) ; 10 nodes for hidden layer 1
     # return a matrix 10x10 of values between [0, 1]
-    self.weight_ol = np.random.uniform(size=(NUMBER_OF_NODES, NUMBER_OF_INPUTS))
-    self.bias_ol = np.random.uniform(size=(NUMBER_OF_NODES, 1))
+    self.weight_ol = np.random.uniform(size=(NUMBER_OF_NODES, NUMBER_OF_DATA))
+    self.bias_ol = np.random.uniform(size=(NUMBER_OF_INPUTS, NUMBER_OF_DATA))
     
   def forward_propagate(self):
     # compute first hidden layer: \sum (inputs * weight) + bias (linear combination)

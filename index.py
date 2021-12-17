@@ -1,3 +1,4 @@
+from os import sep
 import numpy as np
 import pandas as pd
 
@@ -5,8 +6,7 @@ from src.NeuralNetwork import NeuralNetwork
 
 # read training dataset
 # 11 categories => 11 inputs ; 1 output (wine quality)
-red_wine_dataset = pd.read_csv('./dataset/winequality-red.csv')
-red_wine_dataset = np.array(red_wine_dataset)
+red_wine_dataset = pd.read_csv('./dataset/winequality-red.csv', sep=";").to_numpy()
 
 # get dimensions: n lines / m columns
 n, m = red_wine_dataset.shape
@@ -25,12 +25,13 @@ NUMBER_OF_NODES = 10
 LEARNING_RATE = 0.1
 
 # split dataset into two : a training dataset / a testing dataset
-training_dataset = red_wine_dataset[0:NUMBER_OF_DATA - 1].T
-training_inputs = training_dataset[0:m - 2] # wine classifying categories (acidity, sugar, ph,...)
+training_dataset = red_wine_dataset[0:NUMBER_OF_DATA].T
+training_inputs = training_dataset[0:m - 1] # wine classifying categories (acidity, sugar, ph,...)
 training_output = training_dataset[m - 1] # wine quality
+#print(training_output)
 
 testing_dataset = red_wine_dataset[NUMBER_OF_DATA:n].T
-testing_inputs = testing_dataset[0:m - 2] # wine classifying categories (acidity, sugar, ph,...)
+testing_inputs = testing_dataset[0:m - 1] # wine classifying categories (acidity, sugar, ph,...)
 testing_output = testing_dataset[m - 1] # wine quality
 
 if __name__ == "__main__":
