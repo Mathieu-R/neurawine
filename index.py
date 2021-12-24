@@ -31,12 +31,12 @@ EPOCH = 1000
 LEARNING_RATE = 0.1
 
 # split dataset into two : a training dataset / a testing dataset
-training_dataset = red_wine_dataset[0:NUMBER_OF_DATA].T
-training_inputs = training_dataset[0:m - 1] # wine classifying categories (acidity, sugar, ph,...)
-training_output = training_dataset[m - 1] # wine quality
+training_dataset = red_wine_dataset[0:NUMBER_OF_DATA]
+training_inputs = training_dataset[:,0:m - 1] # wine classifying categories (acidity, sugar, ph,...)
+training_output = training_dataset[:,m - 1] # wine quality
 #print(training_output)
 
-testing_dataset = red_wine_dataset[NUMBER_OF_DATA:n].T
+testing_dataset = red_wine_dataset[NUMBER_OF_DATA:n]
 testing_inputs = testing_dataset[0:m - 1] # wine classifying categories (acidity, sugar, ph,...)
 testing_output = testing_dataset[m - 1] # wine quality
 
