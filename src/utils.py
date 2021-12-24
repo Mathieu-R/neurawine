@@ -23,5 +23,5 @@ def ReLU_derivative(x):
 @param y_pred: np.array
 J(y_true, y_pred) = 1/n \sum_{i=1}^{n} (y_true - y_pred)^2
 """
-def mean_squared_error(y_true, y_pred):
-  return (1 / len(y_pred)) * sum((y_true - y_pred) ** 2)
+def mean_squared_error(Y, Y_hat):
+  return (1 / (2 * Y.size)) * sum((Y - Y_hat) ** 2)
