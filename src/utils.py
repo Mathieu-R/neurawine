@@ -25,3 +25,6 @@ J(y_true, y_pred) = 1/n \sum_{i=1}^{n} (y_true - y_pred)^2
 """
 def mean_squared_error(Y, Y_hat):
   return (1 / (2 * Y.size)) * sum((Y - Y_hat) ** 2)
+
+def mean_squared_error_derivative(Y, Y_hat):
+  return (1 / Y.size) * sum((Y_hat - Y))

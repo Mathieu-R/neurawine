@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from src.utils import ReLU, ReLU_derivative, mean_squared_error
 
@@ -39,54 +40,84 @@ class NeuralNetwork:
       self.parameters[f"W{str(i)}"] = np.random.uniform(size=(layers[i - 1], layers[i]))
       self.parameters[f"B{str(i)}"] = np.random.uniform(size=(self.m, layers[i]))
       
-      self.parameters[f"Z{str(i)}"] = np.ones((dataset[0].size, layers[i]))
-      self.parameters[f"A{str(i)}"] = np.ones((dataset[0].size, layers[i]))
+      self.parameters[f"Z{str(i)}"] = np.ones((self.m, layers[i]))
+      self.parameters[f"A{str(i)}"] = np.ones((self.m, layers[i]))
     
     # initialize cost function value
     self.parameters["C"] = 1
-      
     
   def forward_propagate(self, X):
     # initial the neural network with the input dataset
     self.parameters["A0"] = X
     
+    for key, value in self.parameters.items():
+      if type(value) is int:
+        print(key, value)
+      else:
+        print(key, value.shape)
+    
+    print("================================")
+    
     # forward propagate each subsequent layers
     for i in range(1, self.N + 1):
-      
       # Z^i = (A^{i-1} \cdot W^i) + B^i
       Zi = (self.parameters[f"A{str(i-1)}"] @ self.parameters[f"W{str(i)}"]) + self.parameters[f"B{str(i)}"]
       self.parameters[f"Z{str(i)}"] = Zi
       # A^i = f(Z^i)
       self.parameters[f"A{str(i)}"] = ReLU(Zi)
       
+    for key, value in self.parameters.items():
+      if type(value) is int:
+        print(key, value)
+      else:
+        print(key, value.shape)
     
+    print("================================")
+      
   def backward_propagate(self, X, Y):
     # compute derivatives of our loss function
     # we go backward
     
     # partial derivatives for the last layer
-    dL_dAN = ((1 / self.m) * sum((self.parameters[f"A{str(self.N)}"])))[0]
+    dL_dAN = ((1 / self.m) * sum((self.parameters[f"A{str(self.N)}"]) - Y))[0]
     
     dL_dZN = dL_dAN * ReLU_derivative(self.parameters[f"Z{str(self.N)}"])
     
-    print(dL_dAN.shape, ReLU_derivative(self.parameters[f"Z{str(self.N)}"]).shape)
-    dL_dWN = dL_dZN @ self.parameters[f"A{str(self.N - 1)}"].T
+    #print(dL_dZN.T.shape, self.parameters[f"A{str(self.N - 1)}"].shape)
+    dL_dWN = dL_dZN.T @ self.parameters[f"A{str(self.N - 1)}"]
     
     dL_dBN = dL_dZN
     
     self.derivatives[f"dLdZ{str(self.N)}"] = dL_dZN
-    self.derivatives[f"dLdW{str(self.N)}"] = dL_dWN
-    self.derivatives[f"dLdBN{str(self.N)}"] = dL_dBN
+    self.derivatives[f"dLdW{str(self.N)}"] = dL_dWN.T
+    self.derivatives[f"dLdB{str(self.N)}"] = dL_dBN
     
+    for key, value in self.derivatives.items():
+      if type(value) is int:
+        print(key, value)
+      else:
+        print(key, value.shape)
+    
+    print("================================")
+
     # partial derivatives for the subsequent layers
-    for i in range(self.N - 1, 0, -1):
-      dL_dZi = (self.parameters[f"dLdW{str(i + 1)}"].T @ self.parameters[f"dLdZ{str(i + 1)}"]) * ReLU_derivative(self.parameters[f"Z{str(i)}"])
-      dL_dWi = dL_dZi @ self.parameters[f"A{str(i - 1)}"].T
+    for i in range(self.N - 1, 0, -1):   
+      # "*" is to multiply entries 1 by 1 => shape: (m, n) * (m, n) for any m, n 
+      dL_dZi =  ((self.derivatives[f"dLdZ{str(i + 1)}"]) @ self.parameters[f"W{str(i + 1)}"].T) * ReLU_derivative(self.parameters[f"Z{str(i)}"])
+      dL_dWi = self.parameters[f"A{str(i - 1)}"].T @ dL_dZi
       dL_dBi = dL_dZi
       
       self.derivatives[f"dLdZ{str(i)}"] = dL_dZi
       self.derivatives[f"dLdW{str(i)}"] = dL_dWi
       self.derivatives[f"dLdB{str(i)}"] = dL_dBi
+      
+    for key, value in self.derivatives.items():
+      if type(value) is int:
+        print(key, value)
+      else:
+        print(key, value.shape)
+    
+    print("================================")
   
   def update_weights_and_bias(self, learning_rate):
     for i in range(1, self.N + 1):
