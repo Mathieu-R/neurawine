@@ -28,7 +28,7 @@ NUMBER_OF_NODES_OUTPUT_LAYER = 1
 EPOCH = 1000
 
 # learning rate (eta)
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.05
 
 # split dataset into two : a training dataset / a testing dataset
 training_dataset = red_wine_dataset[0:NUMBER_OF_DATA]

@@ -50,37 +50,34 @@ class NeuralNetwork:
     # initial the neural network with the input dataset
     self.parameters["A0"] = X
     
-    for key, value in self.parameters.items():
-      if type(value) is int:
-        print(key, value)
-      else:
-        print(key, value.shape)
-    
-    print("================================")
-    
     # forward propagate each subsequent layers
     for i in range(1, self.N + 1):
       # Z^i = (A^{i-1} \cdot W^i) + B^i
       Zi = (self.parameters[f"A{str(i-1)}"] @ self.parameters[f"W{str(i)}"]) + self.parameters[f"B{str(i)}"]
       self.parameters[f"Z{str(i)}"] = Zi
       # A^i = f(Z^i)
+      print(f"A{str(i-1)}", self.parameters[f"A{str(i-1)}"])
+      print(f"W{str(i)}", self.parameters[f"W{str(i)}"])
+      print(f"B{str(i)}", self.parameters[f"B{str(i)}"])
       self.parameters[f"A{str(i)}"] = ReLU(Zi)
+      #print(ReLU(Zi))
       
-    for key, value in self.parameters.items():
-      if type(value) is int:
-        print(key, value)
-      else:
-        print(key, value.shape)
+    # for key, value in self.parameters.items():
+    #   if type(value) is int:
+    #     print(key, value)
+    #   else:
+    #     print(key, value.shape)
     
-    print("================================")
+    # print("================================")
       
   def backward_propagate(self, X, Y):
     # compute derivatives of our loss function
     # we go backward
     
     # partial derivatives for the last layer
-    dL_dAN = ((1 / self.m) * sum((self.parameters[f"A{str(self.N)}"]) - Y))[0]
+    dL_dAN = np.sum(self.parameters[f"A{str(self.N)}"] - Y)
     
+    # Hadamar product: "*"
     dL_dZN = dL_dAN * ReLU_derivative(self.parameters[f"Z{str(self.N)}"])
     
     #print(dL_dZN.T.shape, self.parameters[f"A{str(self.N - 1)}"].shape)
@@ -91,17 +88,10 @@ class NeuralNetwork:
     self.derivatives[f"dLdZ{str(self.N)}"] = dL_dZN
     self.derivatives[f"dLdW{str(self.N)}"] = dL_dWN.T
     self.derivatives[f"dLdB{str(self.N)}"] = dL_dBN
-    
-    for key, value in self.derivatives.items():
-      if type(value) is int:
-        print(key, value)
-      else:
-        print(key, value.shape)
-    
-    print("================================")
 
     # partial derivatives for the subsequent layers
     for i in range(self.N - 1, 0, -1):   
+      # Hadamar product 
       # "*" is to multiply entries 1 by 1 => shape: (m, n) * (m, n) for any m, n 
       dL_dZi =  ((self.derivatives[f"dLdZ{str(i + 1)}"]) @ self.parameters[f"W{str(i + 1)}"].T) * ReLU_derivative(self.parameters[f"Z{str(i)}"])
       dL_dWi = self.parameters[f"A{str(i - 1)}"].T @ dL_dZi
@@ -110,14 +100,6 @@ class NeuralNetwork:
       self.derivatives[f"dLdZ{str(i)}"] = dL_dZi
       self.derivatives[f"dLdW{str(i)}"] = dL_dWi
       self.derivatives[f"dLdB{str(i)}"] = dL_dBi
-      
-    for key, value in self.derivatives.items():
-      if type(value) is int:
-        print(key, value)
-      else:
-        print(key, value.shape)
-    
-    print("================================")
   
   def update_weights_and_bias(self, learning_rate):
     for i in range(1, self.N + 1):
@@ -125,14 +107,25 @@ class NeuralNetwork:
       self.parameters[f"B{str(i)}"] -= learning_rate * self.derivatives[f"dLdB{str(i)}"]
   
   def gradient_descent(self, X, Y, epoch, learning_rate):
+    cost_history = []
     for i in range(epoch):
+      if i == 2:
+        return
       self.forward_propagate(X)
       self.backward_propagate(X, Y)
       self.update_weights_and_bias(learning_rate)
       
-      if (i % 10 == 0):
-        print(f"iteration: {i}")
-        predictions = np.argmax(self.parameters[f"A{str(self.N)}"], 0)
+      cost = mean_squared_error(Y=Y, Y_hat=self.parameters[f"A{str(self.N)}"])
+      cost_history.append(cost)
+      #print(cost)
+      
+      # if (i % 10 == 0):
+      #   print(f"iteration: {i}")
+      #   predictions = np.argmax(self.parameters[f"A{str(self.N)}"], 0)
         
-        print(predictions, Y)
-        print(np.sum(predictions == Y) / Y.size)
+      #   print(predictions, Y)
+      #   print(np.sum(predictions == Y) / Y.size)
+    
+    plt.plot(range(epoch), cost_history)
+    plt.show()
+    
