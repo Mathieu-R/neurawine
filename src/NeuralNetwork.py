@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.utils import ReLU, ReLU_derivative, mean_squared_error
+from src.utils import ReLU, ReLU_derivative, mean_squared_error, mean_squared_error_derivative
 
 class NeuralNetwork:
-  def __init__(self, dataset, layers) -> None:
+  def __init__(self, X, layers) -> None:
     """[summary]
     NOTATION:
     X = training input (A0)
@@ -30,8 +30,8 @@ class NeuralNetwork:
     # number of layers - 1 because numerotation begins at 0.
     self.N = layers.size - 1
     
-    # number of entries in the dataset
-    self.m = dataset[:,0].size
+    # number of samples in the dataset
+    self.m = X[:,0].size
     
     #print(dataset[0].size)
     
@@ -56,9 +56,9 @@ class NeuralNetwork:
       Zi = (self.parameters[f"A{str(i-1)}"] @ self.parameters[f"W{str(i)}"]) + self.parameters[f"B{str(i)}"]
       self.parameters[f"Z{str(i)}"] = Zi
       # A^i = f(Z^i)
-      print(f"A{str(i-1)}", self.parameters[f"A{str(i-1)}"])
-      print(f"W{str(i)}", self.parameters[f"W{str(i)}"])
-      print(f"B{str(i)}", self.parameters[f"B{str(i)}"])
+      # print(f"A{str(i-1)}", self.parameters[f"A{str(i-1)}"])
+      # print(f"W{str(i)}", self.parameters[f"W{str(i)}"])
+      # print(f"B{str(i)}", self.parameters[f"B{str(i)}"])
       self.parameters[f"A{str(i)}"] = ReLU(Zi)
       #print(ReLU(Zi))
       
@@ -75,7 +75,7 @@ class NeuralNetwork:
     # we go backward
     
     # partial derivatives for the last layer
-    dL_dAN = np.sum(self.parameters[f"A{str(self.N)}"] - Y)
+    dL_dAN = mean_squared_error_derivative(Y=Y, Y_hat=self.parameters[f"A{str(self.N)}"])
     
     # Hadamar product: "*"
     dL_dZN = dL_dAN * ReLU_derivative(self.parameters[f"Z{str(self.N)}"])
@@ -106,11 +106,9 @@ class NeuralNetwork:
       self.parameters[f"W{str(i)}"] -= learning_rate * self.derivatives[f"dLdW{str(i)}"]
       self.parameters[f"B{str(i)}"] -= learning_rate * self.derivatives[f"dLdB{str(i)}"]
   
-  def gradient_descent(self, X, Y, epoch, learning_rate):
+  def gradient_descent(self, X, Y, nb_epoch, learning_rate):
     cost_history = []
-    for i in range(epoch):
-      if i == 2:
-        return
+    for epoch in range(nb_epoch):
       self.forward_propagate(X)
       self.backward_propagate(X, Y)
       self.update_weights_and_bias(learning_rate)
@@ -126,6 +124,8 @@ class NeuralNetwork:
       #   print(predictions, Y)
       #   print(np.sum(predictions == Y) / Y.size)
     
-    plt.plot(range(epoch), cost_history)
+    plt.plot(range(nb_epoch), cost_history)
+    plt.xlabel("epoch")
+    plt.ylabel("cost (MSE)")
     plt.show()
     

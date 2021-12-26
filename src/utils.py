@@ -17,17 +17,8 @@ def ReLU(x):
 def ReLU_derivative(x):
   return x > 0
 
-# loss function
-"""
-@param y_true: np.array
-@param y_pred: np.array
-J(y_true, y_pred) = 1/n \sum_{i=1}^{n} (y_true - y_pred)^2
-"""
 def mean_squared_error(Y, Y_hat):
-  #print("Y", Y)
-  #print("Y_hat", np.sum(Y_hat), Y_hat.shape)
-  #print("somme", sum((Y - Y_hat) ** 2))
-  return (1 / 2) * np.sum((Y - Y_hat) ** 2)
+  return np.square(Y - Y_hat).mean()
 
 def mean_squared_error_derivative(Y, Y_hat):
-  return np.sum((Y_hat - Y))
+  return 2 * np.mean(Y_hat - Y)
