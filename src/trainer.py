@@ -4,8 +4,6 @@ from src.network_elements.loss_functions.mse import MSE
 
 class Trainer:
   def __init__(self, network, batch_size, nb_epoch, learning_rate, loss_function) -> None:
-    pass
-  
     self.network = network 
     self.batch_size = batch_size 
     self.nb_epoch = nb_epoch
@@ -33,5 +31,6 @@ class Trainer:
       print(f"Epoch {epoch} out of {self.nb_epoch} completed.")
       
   def compute_loss(self, input_dataset, output_dataset):
-    predictions = self.network.forward(input_dataset)
+    predictions = self.network.forward_propagate(input_dataset)
     cost = self.loss.compute_loss(Y=output_dataset, Y_hat=predictions)
+    return cost

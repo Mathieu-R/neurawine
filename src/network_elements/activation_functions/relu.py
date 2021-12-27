@@ -1,6 +1,8 @@
 import numpy as np
 
-class ReLU:
+from src.network_elements.network_element import NetworkElement
+
+class ReLU(NetworkElement):
   def __init__(self) -> None:
     self.current_layer_output = None
     
