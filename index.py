@@ -2,7 +2,9 @@ import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-from src.NeuralNetwork import NeuralNetwork
+
+from src.neural_network import NeuralNetwork
+from src.trainer import Trainer
 
 # read red wine dataset
 # 11 categories => 11 inputs ; 1 output (wine quality)
@@ -17,25 +19,30 @@ X_train, X_test, Y_train, Y_test = train_test_split(red_wine_inputs_dataset, red
 # get dimensions: n lines / m columns
 n, m = red_wine_dataset.shape
 
-# number of different wines in the dataset
-# we split the dataset in two so we have n/2
-NUMBER_OF_DATA = int(n/2)
+# dimension of the input
+input_dimension = m - 1
 
-# number of categories = number of inputs = m - 1 (because 1 column is the true output = y)
-NUMBER_OF_NODES_INPUTS = m - 1
-
-# number of nodes for hidden layers 
-NUMBER_OF_NODES_HIDDEN_LAYER = 10
-
-# number of nodes for output layer
-NUMBER_OF_NODES_OUTPUT_LAYER = 1
-
-
-# architecture of the neural network
-# number of nodes by layer
-layers = np.array([NUMBER_OF_NODES_INPUTS, NUMBER_OF_NODES_HIDDEN_LAYER, NUMBER_OF_NODES_OUTPUT_LAYER])
+# architecture of the neural network : number of nodes by layer
+# we do not include the input layer
+# e.g. for "l" hidden layers : [nb_nodes_hidden_layer_1, ..., nb_nodes_hidden_layer_l, nb_nodes_output_layer]
+layers_architecture = np.array([10, 1])
+# activation function for each i-th layer
 activations = np.array(["relu", "relu"])
 
-if __name__ == "__main__":
-  NN = NeuralNetwork(X=X_train, layers=layers)
-  NN.gradient_descent(X=X_train, Y=Y_train, nb_epoch=1000, learning_rate=0.0005)
+network = NeuralNetwork(input_dimension=input_dimension, layers_architecture=layers_architecture, activations=activations)
+trainer = Trainer(network=network, batch_size=10, nb_epoch=1000, learning_rate=0.05, loss_function="mse")
+
+# train our network on training dataset
+trainer.train(X_train, Y_train)
+
+# evaluate error on predictions
+print(f"[Training dataset] Error on predictions = {trainer.compute_loss(X_train, Y_train)}")
+print(f"[Testing dataset] Error on preditions = {trainer.compute_loss(X_test, Y_test)}")
+
+# test our network on testing dataset
+predictions = network.forward_propagate(X_test).argmax(axis=1).squeeze()
+true_output = Y_test.argmax(axis=1).squeeze()
+
+accuracy = (predictions == true_output).mean()
+
+print(f"[Testing dataset] Predictions accuracy = {accuracy}")
