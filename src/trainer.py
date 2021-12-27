@@ -28,7 +28,7 @@ class Trainer:
         dLdAN = self.loss.backward_propagate(Y=batch_output)
         self.network.backward_propagate(dLdAN)
         # 4. Update Weights and Bias
-        self.network.update_weight_and_bias(self.learning_rate)
+        self.network.update_weights_and_bias(self.learning_rate)
         
       print(f"Epoch {epoch} out of {self.nb_epoch} completed.")
       

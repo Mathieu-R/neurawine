@@ -56,7 +56,7 @@ class NeuralNetwork:
   def backward_propagate(self, dLdAN):
     dLdZ = dLdAN
     for network_element in self.network_elements[::-1]:
-      dLdZ = network_element.backward_propagat(dLdZ)
+      dLdZ = network_element.backward_propagate(dLdZ)
     
     return dLdZ
   

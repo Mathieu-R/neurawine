@@ -30,3 +30,4 @@ $ python3 -m pip install -r requirements.txt
 - https://peterroelants.github.io/posts/neural-network-implementation-part04/
 - https://python-course.eu/machine-learning/neural-networks-structure-weights-and-matrices.php
 - https://ml-cheatsheet.readthedocs.io/en/latest/
+- https://machinelearningmastery.com/how-to-improve-neural-network-stability-and-modeling-performance-with-data-scaling/

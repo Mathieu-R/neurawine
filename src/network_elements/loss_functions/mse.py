@@ -16,4 +16,7 @@ class MSE:
     return self.mse(Y, Y_hat)
   
   def backward_propagate(self, Y):
+    if self.current_predictions is None:
+      raise ValueError("Please compute loss function before backward propagating it.")
+    
     return self.mse_derivative(Y=Y, Y_hat=self.current_predictions)

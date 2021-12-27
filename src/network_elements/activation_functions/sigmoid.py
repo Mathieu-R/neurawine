@@ -15,4 +15,7 @@ class Sigmoid:
     return self.sigmoid(Z)
   
   def backward_propagate(self, dLdZ):
+    if self.current_layer_output is None:
+      raise ValueError("Please forward propagate information before backward propagating.")
+    
     return dLdZ * self.sigmoid_derivative(self.current_layer_output)
