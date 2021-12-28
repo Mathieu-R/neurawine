@@ -4,11 +4,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix
-from src.cost_evolution import plot_cost_evolution
 
 from src.neural_network import NeuralNetwork
 from src.trainer import Trainer
 from src.confusion_matrix import plot_confusion_matrix
+from src.cost_evolution import plot_cost_evolution
 
 # read red wine dataset
 # 11 categories => 11 inputs ; 1 output (wine quality)
@@ -37,9 +37,9 @@ input_dimension = m - 1
 # architecture of the neural network : number of nodes by layer
 # we do not include the input layer
 # e.g. for "l" hidden layers : [nb_nodes_hidden_layer_1, ..., nb_nodes_hidden_layer_l, nb_nodes_output_layer]
-layers_architecture = np.array([100, 1])
+layers_architecture = np.array([15, 1])
 # activation function for each i-th layer
-activations = np.array(["relu", "relu"])
+activations = np.array(["relu", "sigmoid"])
 
 network = NeuralNetwork(input_dimension=input_dimension, layers_architecture=layers_architecture, activations=activations)
 trainer = Trainer(network=network, batch_size=10, nb_epoch=1000, learning_rate=0.005, loss_function="mse")
@@ -52,7 +52,6 @@ print(f"[Training dataset] Error on predictions = {trainer.compute_loss(X_train_
 print(f"[Testing dataset] Error on predictions = {trainer.compute_loss(X_test_normalized, Y_test)}")
 
 # test our network on testing dataset
-print(network.forward_propagate(X_test))
 predictions = network.forward_propagate(X_test).argmax(axis=1).squeeze()
 true_output = Y_test.argmax(axis=0).squeeze()
 
