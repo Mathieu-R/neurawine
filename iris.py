@@ -6,7 +6,7 @@ import numpy as np
 
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 from sklearn.metrics import confusion_matrix
 
 from src.neural_network import NeuralNetwork
@@ -32,6 +32,9 @@ if (len(iris_input_dataset) != len(iris_output_dataset)):
 permutations = np.random.permutation(len(iris_input_dataset))
 iris_input_dataset = iris_input_dataset[permutations]
 iris_output_dataset = iris_output_dataset[permutations]
+
+# link output values to classes
+one_hot_encoder = OneHotEncoder(iris_output_classes)
 
 # splitting dataset: 80% training / 20% testing
 X_train, X_test, Y_train, Y_test = train_test_split(iris_input_dataset, iris_output_dataset, train_size=0.8, test_size=0.2, shuffle=False)
