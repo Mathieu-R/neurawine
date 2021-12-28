@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix
+from src.cost_evolution import plot_cost_evolution
 
 from src.neural_network import NeuralNetwork
 from src.trainer import Trainer
@@ -41,16 +42,17 @@ layers_architecture = np.array([100, 1])
 activations = np.array(["relu", "relu"])
 
 network = NeuralNetwork(input_dimension=input_dimension, layers_architecture=layers_architecture, activations=activations)
-trainer = Trainer(network=network, batch_size=10, nb_epoch=1000, learning_rate=0.05, loss_function="mse")
+trainer = Trainer(network=network, batch_size=10, nb_epoch=1000, learning_rate=0.005, loss_function="mse")
 
 # train our network on training dataset
 trainer.train(X_train, Y_train)
 
 # evaluate error on predictions
 print(f"[Training dataset] Error on predictions = {trainer.compute_loss(X_train_normalized, Y_train)}")
-print(f"[Testing dataset] Error on preditions = {trainer.compute_loss(X_test_normalized, Y_test)}")
+print(f"[Testing dataset] Error on predictions = {trainer.compute_loss(X_test_normalized, Y_test)}")
 
 # test our network on testing dataset
+print(network.forward_propagate(X_test))
 predictions = network.forward_propagate(X_test).argmax(axis=1).squeeze()
 true_output = Y_test.argmax(axis=0).squeeze()
 
@@ -58,6 +60,9 @@ accuracy = (predictions == true_output).mean()
 
 print(f"[Testing dataset] Predictions accuracy = {accuracy}")
 
-# get confusion matrix
+# plot cost evolution over epoch
+plot_cost_evolution(cost_history=trainer.cost_history, nb_epoch=1000)
+
+# plot confusion matrix
 cm = confusion_matrix(y_true=true_output, y_pred=predictions)
 plot_confusion_matrix(confusion_matrix=cm)

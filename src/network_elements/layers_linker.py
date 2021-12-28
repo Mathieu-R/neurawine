@@ -7,13 +7,21 @@ class LayersLinker(NetworkElement):
       self.previous_layer_dimension = previous_layer_dimension
       self.next_layer_dimension = next_layer_dimension
       
-      self.W = np.random.normal(loc=0.0, scale=1.0, size=(previous_layer_dimension, next_layer_dimension))
-      self.B = np.random.normal(loc=0.0, scale=1.0, size=(1, next_layer_dimension))
+      self.W = self.init_random_uniform_matrix(size=(previous_layer_dimension, next_layer_dimension))
+      self.B = self.init_random_uniform_matrix(size=(1, next_layer_dimension))
       
       self.previous_layer_activated_output = None
       
       self.dLdW = None
       self.dLdB = None
+      
+  def init_random_uniform_matrix(self, size):
+    low = - np.sqrt(1 / np.sum(size))
+    high = np.sqrt(1 / np.sum(size))
+    return np.random.uniform(low=low, high=high, size=size)
+    
+  def init_random_gaussian_matrix(self, size, mean=0.0, variance=1.0):
+    return np.random.normal(loc=mean, scale=np.sqrt(variance), size=size)
 
   def forward_propagate(self, A):
     self.previous_layer_activated_output = A
