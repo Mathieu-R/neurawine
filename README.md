@@ -26,6 +26,10 @@ Install required packages
 $ python3 -m pip install -r requirements.txt
 ```
 
+### Captures
+
+![cost evolution](figures/cost_evolution.png)
+
 ### Interesting reading
 
 - http://neuralnetworksanddeeplearning.com/chap2.html
