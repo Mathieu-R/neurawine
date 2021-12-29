@@ -1,6 +1,8 @@
 # neurawine
 
-Neural Network to predict quality of a wine.
+The `wine dataset` from `sklearn` is a result of a chemical analysis of different wines grown in the same region of Italy by `3 different cultivators`. Each sample has `13 measurements` (_alcohol, magnesium, color intensity,...). The target value of each sample is one of the three cultivators. 
+
+The goal of this neural network is to predict from which of the 3 cultivators a given wine comes based on these 13 measurements.
 
 ### Installation
 
